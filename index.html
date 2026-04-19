@@ -52,8 +52,6 @@
     function getMoonAge(date = new Date()) {
       const knownNewMoon = new Date("2024-04-08T18:21:00Z");
       const diff = (date - knownNewMoon) / 1000 / 60 / 60 / 24;
-
-      
       return (diff % CYCLE + CYCLE) % CYCLE;
     }
 
@@ -68,24 +66,42 @@
       return "Minguante";
     }
 
+    
+    function controlarLampada(brilho, temperatura) {
+      console.log(`%c Enviar para Lâmpada -> Brilho: ${brilho}% | Cor: ${temperatura}K`, "color: #f1c40f; font-weight: bold;");
+      
+      
+    }
+
     function updateMoon() {
       const age = getMoonAge();
       const illumination = age / CYCLE;
 
-      const shadow = document.getElementById("shadow");
+      
+      const brilhoReal = Math.round(Math.sin(Math.PI * illumination) * 100);
+      
+      
+      const tempCor = Math.round(2700 + (3800 * (brilhoReal / 100)));
 
+      
+      controlarLampada(brilhoReal, tempCor);
+
+      const shadow = document.getElementById("shadow");
       
       shadow.style.transform = `translateX(${(illumination - 0.5) * 300}px)`;
 
       const phase = getMoonPhase(age);
-      const percent = Math.round(illumination * 100);
-
+      
+      
       document.getElementById("phaseText").innerText =
-        `${phase} (${percent}% iluminada)`;
+        `${phase} (${brilhoReal}% iluminada)`;
     }
 
     updateMoon();
-  </script>
+    
+    
+    setInterval(updateMoon, 1800000); 
+</script>
 
 </body>
 </html>
