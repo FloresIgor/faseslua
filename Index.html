@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Fase da Lua</title>
+
+  <style>
+    body {
+      background: #0b0f1a;
+      color: white;
+      font-family: Arial, sans-serif;
+      text-align: center;
+      margin-top: 50px;
+    }
+
+    .moon {
+      width: 150px;
+      height: 150px;
+      border-radius: 50%;
+      background: white;
+      margin: 20px auto;
+      position: relative;
+      overflow: hidden;
+      transform: rotate(180deg);
+      box-shadow: 0 0 20px rgba(255,255,255,0.2);
+    }
+
+    #shadow {
+      position: absolute;
+      width: 150px;
+      height: 150px;
+      border-radius: 50%;
+      background: black;
+      top: 0;
+      left: 0;
+      transition: transform 0.5s ease;
+    }
+  </style>
+</head>
+
+<body>
+
+  <h1>Fase da Lua</h1>
+  <div class="moon">
+    <div id="shadow"></div>
+  </div>
+  <p id="phaseText"></p>
+
+  <script>
+    const CYCLE = 29.53058867;
+
+    function getMoonAge(date = new Date()) {
+      const knownNewMoon = new Date("2024-04-08T18:21:00Z");
+      const diff = (date - knownNewMoon) / 1000 / 60 / 60 / 24;
+
+      
+      return (diff % CYCLE + CYCLE) % CYCLE;
+    }
+
+    function getMoonPhase(age) {
+      if (age < 1) return "Lua Nova";
+      if (age < 7.4) return "Crescente";
+      if (age < 8.4) return "Quarto Crescente";
+      if (age < 14.8) return "Gibosa Crescente";
+      if (age < 15.8) return "Lua Cheia";
+      if (age < 22.1) return "Gibosa Minguante";
+      if (age < 23.1) return "Quarto Minguante";
+      return "Minguante";
+    }
+
+    function updateMoon() {
+      const age = getMoonAge();
+      const illumination = age / CYCLE;
+
+      const shadow = document.getElementById("shadow");
+
+      
+      shadow.style.transform = `translateX(${(illumination - 0.5) * 300}px)`;
+
+      const phase = getMoonPhase(age);
+      const percent = Math.round(illumination * 100);
+
+      document.getElementById("phaseText").innerText =
+        `${phase} (${percent}% iluminada)`;
+    }
+
+    updateMoon();
+  </script>
+
+</body>
+</html>
